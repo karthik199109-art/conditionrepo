@@ -26,3 +26,17 @@ stages:
             inputs:
               filePath: '$(system.defaultworkingdirectory)/Src1/ScanMRCCore/test.ps1'
             condition: eq('${{ parameters.projectType }}', 'member')
+
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(system.defaultworkingdirectory)/Src'
+              Contents: '**'
+              TargetFolder: '$(Agent.TempDirectory)'
+              CleanTargetFolder: true
+              OverWrite: true
+            condition: eq('${{ parameters.projectType }}', 'sales')
+          
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: 'tree "$(Agent.TempDirectory)" /F'
