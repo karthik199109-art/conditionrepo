@@ -31,7 +31,7 @@ stages:
             inputs:
               SourceFolder: '$(system.defaultworkingdirectory)/Src'
               Contents: '**'
-              TargetFolder: '$(Agent.TempDirectory)'
+              TargetFolder: '$(Agent.TempDirectory)/Src'
               CleanTargetFolder: true
               OverWrite: true
             condition: eq('${{ parameters.projectType }}', 'sales')
