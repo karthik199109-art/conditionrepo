@@ -31,7 +31,7 @@ stages:
             inputs:
               SourceFolder: '$(system.defaultworkingdirectory)/Src'
               Contents: '**'
-              TargetFolder: '$(Agent.TempDirectory)/Src'
+              TargetFolder: '$(Agent.TempDirectory)/Sales/Src'
               CleanTargetFolder: true
               OverWrite: true
             condition: eq('${{ parameters.projectType }}', 'sales')
@@ -40,10 +40,10 @@ stages:
             inputs:
               SourceFolder: '$(system.defaultworkingdirectory)/Src1'
               Contents: '**'
-              TargetFolder: '$(Agent.TempDirectory)/Src1'
+              TargetFolder: '$(Agent.TempDirectory)/Member/Src1'
               CleanTargetFolder: true
               OverWrite: true
-            condition: eq('${{ parameters.projectType }}', 'Member')     
+            condition: eq('${{ parameters.projectType }}', 'member')     
 
           - task: CopyFiles@2
             inputs:
@@ -58,14 +58,22 @@ stages:
 
           - task: ArchiveFiles@2
             inputs:
-              rootFolderOrFile: '$(Agent.TempDirectory)'
+              rootFolderOrFile: '$(Agent.TempDirectory)/${{ parameters.projectType }}'
               includeRootFolder: true
               archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/${{ parameters.projectType }}.zip'
+              replaceExistingArchive: true
+
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Agent.TempDirectory)/Test'
+              includeRootFolder: true
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/test.zip'
               replaceExistingArchive: true
           
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
               artifact: 'build'
               publishLocation: 'pipeline'
